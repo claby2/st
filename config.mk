@@ -7,8 +7,18 @@ VERSION = 0.8.4
 PREFIX = /usr/local
 MANPREFIX = $(PREFIX)/share/man
 
-X11INC = /usr/X11R6/include
-X11LIB = /usr/X11R6/lib
+OS = $(shell uname -s)
+
+ifeq ($(OS), Darwin)
+	# x11 include and lib may be located in /opt/ on Darwin
+	X11INC = /opt/X11/include
+	X11LIB = /opt/X11/lib
+else
+	X11INC = /usr/X11R6/include
+	X11LIB = /usr/X11R6/lib
+	# lrt may not be supported in Darwin
+	LRT = $(-lrt)
+endif
 
 PKG_CONFIG = pkg-config
 
@@ -16,7 +26,7 @@ PKG_CONFIG = pkg-config
 INCS = -I$(X11INC) \
        `$(PKG_CONFIG) --cflags fontconfig` \
        `$(PKG_CONFIG) --cflags freetype2`
-LIBS = -L$(X11LIB) -lm -lrt -lX11 -lutil -lXft \
+LIBS = -L$(X11LIB) -lm $(LRT) -lX11 -lutil -lXft \
        `$(PKG_CONFIG) --libs fontconfig` \
        `$(PKG_CONFIG) --libs freetype2`
 
