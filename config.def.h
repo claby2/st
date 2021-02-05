@@ -6,6 +6,7 @@
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
 static char *font = "mono:pixelsize=14:antialias=true:autohint=true";
+static char *font2[] = { "Symbola:pixelsize=14:antialias=true:autohint=true" };
 static int borderpx = 15;
 
 /*
