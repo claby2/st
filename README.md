@@ -5,6 +5,7 @@ st is a simple terminal emulator for X which sucks less.
 # Fork features
 
 *   MacOS support\*
+*   zoom increment
 
 # Fork patches
 
@@ -12,9 +13,11 @@ Patches can be found in `patches/`.
 
 *   boxdraw
 *   dracula
+*   font2
 *   scrollback
 *   scrollback-mouse
 *   scrollback-mouse-altscreen
+*   scrollback-mouse-increment
 *   xresources
 
 # Requirements
