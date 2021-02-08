@@ -737,6 +737,52 @@ execsh(char *cmd, char **args)
 }
 
 void
+kexecsh(const Arg * a)
+{
+	char buf[strlen(a->s) + 2];
+	snprintf(buf, sizeof buf, "%s%s", a->s, "\n");
+	ttywrite(buf, sizeof buf, 0);
+}
+
+void
+openscrollback(const Arg * a)
+{
+	char *catcommand, *lesscommand;
+	int catcommandsize, lesscommandsize;
+	int tmpfilesize = strlen(a->s);
+	char **writetotmp;
+	Arg pipe;
+	Arg arg;
+
+	/* Compose cat command */
+	catcommandsize = 6 + tmpfilesize + 1;
+	catcommand = (char *)malloc(catcommandsize);
+	strcpy(catcommand, "cat > ");
+	strcat(catcommand, a->s);
+
+	writetotmp = (char *[5]){
+		"/bin/sh",
+		"-c",
+		catcommand,
+		"externalpipe",
+		NULL
+	};
+	pipe.v = writetotmp;
+	/* Write scrollback buffer to tmp file */
+	externalpipe(&pipe);
+
+	/* Compose less command */
+	lesscommandsize = 5 + strlen(a->s) + 1;
+	lesscommand = (char *)malloc(lesscommandsize);
+	strcpy(lesscommand, "less ");
+	strcat(lesscommand, a->s);
+
+	/* Execute less */
+	arg.s = lesscommand;
+	kexecsh(&arg);
+}
+
+void
 sigchld(int a)
 {
 	int stat;

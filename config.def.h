@@ -245,6 +245,7 @@ static MouseShortcut mshortcuts[] = {
 const int zoomincrement = 3;
 static Shortcut shortcuts[] = {
 	/* mask                 keysym          function        argument */
+	{ TERMMOD,              XK_H,           openscrollback, {.s =  "/tmp/st-stdout"} },
 	{ XK_ANY_MOD,           XK_Break,       sendbreak,      {.i =  0} },
 	{ ControlMask,          XK_Print,       toggleprinter,  {.i =  0} },
 	{ ShiftMask,            XK_Print,       printscreen,    {.i =  0} },

@@ -6,6 +6,7 @@ st is a simple terminal emulator for X which sucks less.
 
 *   MacOS support\*
 *   zoom increment
+*   open scrollback
 
 # Fork patches
 

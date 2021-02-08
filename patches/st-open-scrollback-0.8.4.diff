@@ -1,0 +1,81 @@
+This patch introduces the functionality to preview a scrollback buffer.
+Should be patched on top of (1) st-externalpipe, (2) st-externalpipe-eternal,
+and (3) st-scrollback.
+--- a/config.def.h	2021-02-08 18:34:36.839613047 +0800
++++ b/config.def.h	2021-02-08 18:31:34.280245801 +0800
+@@ -245,6 +245,7 @@ static MouseShortcut mshortcuts[] = {
+ static Shortcut shortcuts[] = {
+ 	/* mask                 keysym          function        argument */
++	{ TERMMOD,              XK_H,           openscrollback, {.s =  "/tmp/st-stdout"} },
+ 	{ XK_ANY_MOD,           XK_Break,       sendbreak,      {.i =  0} },
+ 	{ ControlMask,          XK_Print,       toggleprinter,  {.i =  0} },
+ 	{ ShiftMask,            XK_Print,       printscreen,    {.i =  0} },
+unchanged:
+--- a/st.c	2021-02-08 18:34:36.843613033 +0800
++++ b/st.c	2021-02-08 18:29:02.280677696 +0800
+@@ -737,6 +737,52 @@ execsh(char *cmd, char **args)
+ }
+ 
+ void
++kexecsh(const Arg * a)
++{
++	char buf[strlen(a->s) + 2];
++	snprintf(buf, sizeof buf, "%s%s", a->s, "\n");
++	ttywrite(buf, sizeof buf, 0);
++}
++
++void
++openscrollback(const Arg * a)
++{
++	char *catcommand, *lesscommand;
++	int catcommandsize, lesscommandsize;
++	int tmpfilesize = strlen(a->s);
++	char **writetotmp;
++	Arg pipe;
++	Arg arg;
++
++	/* Compose cat command */
++	catcommandsize = 6 + tmpfilesize + 1;
++	catcommand = (char *)malloc(catcommandsize);
++	strcpy(catcommand, "cat > ");
++	strcat(catcommand, a->s);
++
++	writetotmp = (char *[5]){
++		"/bin/sh",
++		"-c",
++		catcommand,
++		"externalpipe",
++		NULL
++	};
++	pipe.v = writetotmp;
++	/* Write scrollback buffer to tmp file */
++	externalpipe(&pipe);
++
++	/* Compose less command */
++	lesscommandsize = 5 + strlen(a->s) + 1;
++	lesscommand = (char *)malloc(lesscommandsize);
++	strcpy(lesscommand, "less ");
++	strcat(lesscommand, a->s);
++
++	/* Execute less */
++	arg.s = lesscommand;
++	kexecsh(&arg);
++}
++
++void
+ sigchld(int a)
+ {
+ 	int stat;
+only in patch2:
+unchanged:
+--- a/st.h	2021-02-08 18:34:36.843613033 +0800
++++ b/st.h	2021-02-08 18:29:02.280677696 +0800
+@@ -84,6 +84,8 @@ void draw(void);
+ 
+ void kscrolldown(const Arg *);
+ void kscrollup(const Arg *);
++void kexecsh(const Arg *);
++void openscrollback(const Arg *);
+ void externalpipe(const Arg *);
+ void printscreen(const Arg *);
+ void printsel(const Arg *);
