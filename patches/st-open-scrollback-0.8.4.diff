@@ -1,22 +1,26 @@
 This patch introduces the functionality to preview a scrollback buffer.
 Should be patched on top of (1) st-externalpipe, (2) st-externalpipe-eternal,
 and (3) st-scrollback.
---- a/config.def.h	2021-02-08 18:34:36.839613047 +0800
-+++ b/config.def.h	2021-02-08 18:31:34.280245801 +0800
-@@ -245,6 +245,7 @@ static MouseShortcut mshortcuts[] = {
+diff --git a/config.def.h b/config.def.h
+index 051776d..b55b60a 100644
+--- a/config.def.h
++++ b/config.def.h
+@@ -246,5 +246,6 @@ static MouseShortcut mshortcuts[] = {
  static Shortcut shortcuts[] = {
  	/* mask                 keysym          function        argument */
 +	{ TERMMOD,              XK_H,           openscrollback, {.s =  "/tmp/st-stdout"} },
  	{ XK_ANY_MOD,           XK_Break,       sendbreak,      {.i =  0} },
  	{ ControlMask,          XK_Print,       toggleprinter,  {.i =  0} },
  	{ ShiftMask,            XK_Print,       printscreen,    {.i =  0} },
-unchanged:
---- a/st.c	2021-02-08 18:34:36.843613033 +0800
-+++ b/st.c	2021-02-08 18:29:02.280677696 +0800
-@@ -737,6 +737,52 @@ execsh(char *cmd, char **args)
+diff --git a/st.c b/st.c
+index 0600342..04bbae0 100644
+--- a/st.c
++++ b/st.c
+@@ -736,6 +736,52 @@ execsh(char *cmd, char **args)
+ 	_exit(1);
  }
  
- void
++void
 +kexecsh(const Arg * a)
 +{
 +	char buf[strlen(a->s) + 2];
@@ -62,14 +66,13 @@ unchanged:
 +	kexecsh(&arg);
 +}
 +
-+void
+ void
  sigchld(int a)
  {
- 	int stat;
-only in patch2:
-unchanged:
---- a/st.h	2021-02-08 18:34:36.843613033 +0800
-+++ b/st.h	2021-02-08 18:29:02.280677696 +0800
+diff --git a/st.h b/st.h
+index 6fd0e40..742ff65 100644
+--- a/st.h
++++ b/st.h
 @@ -84,6 +84,8 @@ void draw(void);
  
  void kscrolldown(const Arg *);
