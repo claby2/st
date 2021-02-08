@@ -13,6 +13,8 @@ Patches can be found in `patches/`.
 
 *   boxdraw
 *   dracula
+*   externalpipe
+*   externalpipe-eternal
 *   font2
 *   scrollback
 *   scrollback-mouse
