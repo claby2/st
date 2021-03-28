@@ -12,6 +12,7 @@ st is a simple terminal emulator for X which sucks less.
 
 Patches can be found in `patches/`.
 
+*   alpha
 *   boxdraw
 *   dracula
 *   externalpipe
